@@ -25,13 +25,12 @@ export const getPizza = (data) => {
 }
 
 export const grouping = (party, diet) => {
-  const whoEats = party.filter(members => members.eatsPizza);
+  const members = party;
 
-  for (let i = 0; i < whoEats.length; i++) {
-    if (whoEats[i].name) {
-      whoEats[i].isVegan = diet[i].isVegan
+  for (let i = 0; i < members.length; i++) {
+    if (members[i].name) {
+      members[i].isVegan = diet[i].isVegan
     }
   }
-
-  return whoEats
+  return members
 }
