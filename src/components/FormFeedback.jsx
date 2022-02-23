@@ -60,43 +60,47 @@ export function FormFeedback({ name, setFeedback, cancel }) {
   return (
     <div className="feedback-form">
       <form>
-        <div>
-          <p>Name</p>
-          {name}
-        </div>
-        <div>⭐ ⭐ ⭐️️</div>
-        <div>
-          Phone
-          <input
-            onChange={(e) => phoneHandler(e)}
-            onBlur={(e) => blurHandler(e)}
-            name="phone"
-            type="text"
-            placeholder="Enter your phone number"
-            value={phone}
-          />
-          {phoneDirty && phoneError && (
-            <div style={{ color: "red" }}>{phoneError}</div>
+        <div className="container-form">
+          <div>
+            <h3>Name</h3>
+            {name}
+          </div>
+
+          <div>⭐ ⭐ ⭐️️</div>
+
+          <div>
+            <h3>Phone</h3>
+            <input
+              onChange={(e) => phoneHandler(e)}
+              onBlur={(e) => blurHandler(e)}
+              name="phone"
+              type="text"
+              placeholder="Enter your phone number"
+              value={phone}
+            />
+            {phoneDirty && phoneError && (
+              <div style={{ color: "red" }}>{phoneError}</div>
+            )}
+          </div>
+          <div>
+            <h3>Comment</h3>
+            <textarea
+              onChange={(e) => commentHandler(e)}
+              value={comment}
+              onBlur={(e) => blurHandler(e)}
+              name="comment"
+              placeholder="Write a comment"
+            />
+            {commentDirty && commentError && (
+              <div style={{ color: "red" }}>{commentError}</div>
+            )}
+          </div>
+          {valid ? (
+            <button onClick={(e) => submitForm(e)}>Save</button>
+          ) : (
+            <button onClick={cancel}>Cancel</button>
           )}
         </div>
-        <div>
-          Comment
-          <textarea
-            onChange={(e) => commentHandler(e)}
-            value={comment}
-            onBlur={(e) => blurHandler(e)}
-            name="comment"
-            placeholder="Write a comment"
-          />
-          {commentDirty && commentError && (
-            <div style={{ color: "red" }}>{commentError}</div>
-          )}
-        </div>
-        {valid ? (
-          <button onClick={(e) => submitForm(e)}>Save</button>
-        ) : (
-          <button onClick={cancel}>Cancel</button>
-        )}
       </form>
     </div>
   );

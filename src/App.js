@@ -116,7 +116,9 @@ function App() {
           />
         )}
       </div>
-      <button onClick={clearApp}>Clear app</button>
+      <button className="clear-data" onClick={clearApp}>
+        Clear data
+      </button>
     </div>
   );
 }
