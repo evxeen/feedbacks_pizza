@@ -21,7 +21,15 @@ export function ViewFeedback({ feedbackData, cancel, deleteFeedback }) {
           <h3>Name</h3>
           <p>{feedbackData.name}</p>
         </div>
-        <div>stars</div>
+        <div className="rating-items">
+          <ul>
+            {feedbackData.rating.map((_, index) => (
+              <li className="rating-item" key={index}>
+                {feedbackData.rating[index] ? "⭐️" : "☆"}
+              </li>
+            ))}
+          </ul>
+        </div>
         <div>
           <h3>Phone</h3>
           <p>{feedbackData.phone}</p>

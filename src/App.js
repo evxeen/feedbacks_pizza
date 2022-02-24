@@ -2,7 +2,13 @@ import "./App.css";
 import { useEffect, useState } from "react";
 
 import { GUESTS_API, DIETS_API } from "./config";
-import { getData, changeStrings, grouping } from "./helpers";
+import {
+  getData,
+  changeStrings,
+  grouping,
+  removeFeedbackPerson,
+  addFeedbackPerson,
+} from "./helpers";
 import { Guest } from "./components/Guest";
 import { FormFeedback } from "./components/FormFeedback";
 import { ViewFeedback } from "./components/ViewFeedback";
@@ -16,6 +22,7 @@ function App() {
   const [viewHidden, setViewHidden] = useState(true);
   const [name, setName] = useState("");
   const [feedback, setFeedback] = useState({});
+  const [rating, setRating] = useState([true, true, true, false, false]);
 
   const setData = async () => {
     const { party } = await getData(GUESTS_API);
@@ -26,13 +33,14 @@ function App() {
   };
 
   useEffect(() => {
-    if (!localStorage.length) {
+    localStorage.setItem("q", JSON.stringify({ name: "q" })); // test data
+    if (!localStorage.getItem("guestList")) {
       setData();
     }
   }, []);
 
   useEffect(() => {
-    if (localStorage.length) {
+    if (localStorage.getItem("guestList")) {
       addFeedback(feedback.name);
     }
   }, [feedback]);
@@ -57,56 +65,53 @@ function App() {
   };
 
   const deleteFeedback = (name) => {
-    const feedbackPerson = persons.reduce((acc, person) => {
-      const newFeedback = { ...person };
-      if (person.name === name) {
-        delete newFeedback["feedback"];
-      }
-      acc.push(newFeedback);
-      return acc;
-    }, []);
-    setPersons(feedbackPerson);
-    localStorage.setItem("guestList", JSON.stringify(feedbackPerson));
+    setPersons(removeFeedbackPerson(name, persons));
+    localStorage.setItem(
+      "guestList",
+      JSON.stringify(removeFeedbackPerson(name, persons))
+    );
     cancel();
   };
 
   const addFeedback = (name) => {
-    const feedbackPerson = persons.reduce((acc, person) => {
-      const newFeedback = { ...person };
-      if (person.name === name) {
-        newFeedback.feedback = { ...feedback };
-      }
-      acc.push(newFeedback);
-      return acc;
-    }, []);
-    setPersons(feedbackPerson);
-    localStorage.setItem("guestList", JSON.stringify(feedbackPerson));
+    setPersons(addFeedbackPerson(name, persons, feedback));
+    localStorage.setItem(
+      "guestList",
+      JSON.stringify(addFeedbackPerson(name, persons, feedback))
+    );
   };
 
   const cancel = () => {
     setFormHidden(true);
-    setListHidden(false);
     setViewHidden(true);
+    setListHidden(false);
+    setRating([true, true, true, false, false]);
   };
 
   return (
     <div className="App">
-      <header>{!localStorage.length && <h1>Loading...</h1>}</header>
+      <header>
+        {!localStorage.getItem("guestList") && <h1>Loading...</h1>}
+      </header>
       <div className="content">
-        {localStorage.length &&
+        {localStorage.getItem("guestList") &&
           JSON.parse(localStorage.getItem("guestList")).map((guest, index) => (
             <Guest
               key={index}
               guest={guest}
               listHidden={listHidden}
-              setListHidden={setListHidden}
               showForm={showForm}
               showView={showView}
-              setViewHidden={setViewHidden}
             />
           ))}
         {!formHidden && (
-          <FormFeedback name={name} setFeedback={setFeedback} cancel={cancel} />
+          <FormFeedback
+            name={name}
+            setFeedback={setFeedback}
+            cancel={cancel}
+            rating={rating}
+            setRating={setRating}
+          />
         )}
         {!viewHidden && (
           <ViewFeedback

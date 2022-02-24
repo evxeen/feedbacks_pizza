@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export function FormFeedback({ name, setFeedback, cancel }) {
+export function FormFeedback({ name, setFeedback, rating, setRating, cancel }) {
   const [phone, setPhone] = useState("");
   const [comment, setComment] = useState("");
   const [phoneDirty, setPhoneDirty] = useState(false);
@@ -23,7 +23,7 @@ export function FormFeedback({ name, setFeedback, cancel }) {
 
   const submitForm = (e) => {
     e.preventDefault();
-    setFeedback({ name, phone, comment });
+    setFeedback({ name, phone, comment, rating });
     cancel();
   };
 
@@ -57,6 +57,14 @@ export function FormFeedback({ name, setFeedback, cancel }) {
     }
   };
 
+  const toggleRating = (index) => {
+    const newRating = [...rating].fill(false);
+    for (let i = 0; i < index + 1; i++) {
+      newRating[i] = true;
+    }
+    setRating(newRating);
+  };
+
   return (
     <div className="feedback-form">
       <form>
@@ -66,9 +74,21 @@ export function FormFeedback({ name, setFeedback, cancel }) {
             {name}
           </div>
 
-          <div>⭐ ⭐ ⭐️️</div>
+          <div className="rating-items">
+            <ul>
+              {rating.map((_, index) => (
+                <li
+                  className="rating-item"
+                  key={index}
+                  onClick={() => toggleRating(index)}
+                >
+                  {rating[index] ? "⭐️" : "☆"}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <div>
+          <div className="container-form_phone">
             <h3>Phone</h3>
             <input
               onChange={(e) => phoneHandler(e)}
